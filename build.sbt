@@ -318,30 +318,6 @@ commands += Command.command("metabrowse-site") { s =>
     s
 }
 
-val sbtPlugin = project
-  .in(file("sbt-metabrowse"))
-  .enablePlugins(BuildInfoPlugin)
-  .settings(
-    name := "sbt-metabrowse",
-    scalaVersion := Version.scala212,
-    crossScalaVersions := Seq(Version.scala212),
-    publishLocal := publishLocal
-      .dependsOn((coreJVM / publishLocal))
-      .dependsOn((cli / publishLocal))
-      .value,
-    sbt.Keys.sbtPlugin := true,
-    // scriptedBufferLog := false,
-    scriptedLaunchOpts += "-Dproject.version=" + version.value,
-    buildInfoPackage := "metabrowse.sbt",
-    buildInfoKeys := Seq[BuildInfoKey](
-      version,
-      "scalametaVersion" -> Version.scalameta,
-      (coreJVM / scalaVersion),
-      (coreJVM / scalaBinaryVersion)
-    )
-  )
-  .enablePlugins(ScriptedPlugin)
-
 lazy val tests = project
   .in(file("metabrowse-tests"))
   .configs(IntegrationTest)
