@@ -31,18 +31,26 @@ git submodule update
 
 npm install -g yarn
 
-sbt
-  > metabrowse-site                        # generate static site under target/metabrowse.
-  > js/fastOptJS::startWebpackDevServer # spin up local file server that listens for changes.
-  > ~js/fastOptJS                       # compiles Scala.js application, browser refreshes on edit.
+./mill jsBundle.devServer             # generate static site for paiges, spin up local file server that listens for changes.
+./mill -w 'js[2.13.16].fastLinkJS'    # in another terminal: compiles Scala.js application, browser refreshes on edit.
 open http://localhost:8080
+```
+
+To only generate the static site, run `./mill show 'example[2.13.16].metabrowseSite'`, which prints the
+directory it's written to.
+
+## Running tests
+
+```
+./mill 'tests[2.13.16].test'    # JVM tests
+./mill 'js[2.13.16].test'       # Scala.js tests
 ```
 
 ## Packaging CLI Locally
 
 ```
-sbt cli/assembly
-java -jar ./metabrowse-cli/target/scala-2.12/metabrowse.jar ...
+./mill show 'cli[2.13.16].assembly'   # prints the path of the generated JAR
+java -jar out/cli/2.13.16/assembly.dest/out.jar ...
 ```
 
 ## Upgrading the Monaco Editor
@@ -56,16 +64,10 @@ contains several custom tweaks.
 The following instructions give a rough idea how to upgrade the monaco editor
 facades:
 
- - Update the Monaco Editor version in `build.sbt`
-   ```scala
-   npmDependencies in Compile ++= Seq(
-     "monaco-editor" -> "x.y.z",
-     // ...
-   )
+ - Update the Monaco Editor version in `metabrowse-js/package.json` and
+   `metabrowse-js/yarn.lock`
    ```
- - Update the NPM packages after cleaning to force download of the new version
-   ```
-   $ sbt -batch clean js/compile:npmUpdate
+   $ cd metabrowse-js && yarn upgrade monaco-editor@x.y.z
    ```
  - Run script to update the `Monaco.scala` file
    ```

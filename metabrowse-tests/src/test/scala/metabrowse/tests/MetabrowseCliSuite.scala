@@ -57,12 +57,6 @@ class MetabrowseCliSuite extends BaseMetabrowseCliSuite {
           |org/typelevel/paiges/ScalaVersionCompat.LazyList.
           |""".stripMargin
       else ""
-    val extraPi213Stuff =
-      if (is212) ""
-      else
-        """org/typelevel/paiges/ColorTest#TwoPi.
-          |org/typelevel/paiges/ColorTest#TwoThirdsPi.
-          |""".stripMargin
     val expected =
       s"""|org/typelevel/paiges/Chunk.
         |org/typelevel/paiges/Chunk.best().
@@ -72,7 +66,9 @@ class MetabrowseCliSuite extends BaseMetabrowseCliSuite {
         |org/typelevel/paiges/Chunk.makeIndentStr().
         |org/typelevel/paiges/ColorTest#
         |org/typelevel/paiges/ColorTest#Quote.
-        |${extraPi213Stuff}org/typelevel/paiges/ColorTest#`<init>`().
+        |org/typelevel/paiges/ColorTest#TwoPi.
+        |org/typelevel/paiges/ColorTest#TwoThirdsPi.
+        |org/typelevel/paiges/ColorTest#`<init>`().
         |org/typelevel/paiges/ColorTest#bg().
         |org/typelevel/paiges/ColorTest#fg().
         |org/typelevel/paiges/ColorTest#fromAngle().

@@ -12,7 +12,6 @@ jobs:
         with:
           java-version: 11
           distribution: adopt
-      - uses: sbt/setup-sbt@v1
       - uses: coursier/setup-action@v3
         with:
           apps: scalafmt
