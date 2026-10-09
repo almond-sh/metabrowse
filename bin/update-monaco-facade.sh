@@ -9,14 +9,11 @@ set -x
 
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 TS_IMPORTER_DIR="$ROOT_DIR/project/ts-importer"
-NODE_MODULES_DIR="$ROOT_DIR/metabrowse-js/target/scala-2.12/scalajs-bundler/main/node_modules"
-NPM_MONACO_D_TS="$ROOT_DIR/metabrowse-js/target/scala-2.12/scalajs-bundler/main/node_modules/monaco-editor/monaco.d.ts"
+# Directory where the build installs the NPM modules of metabrowse-js
+NODE_MODULES_DIR="$(cd "$ROOT_DIR" && ./mill --ticker false show jsBundle.nodeModules | sed -E 's/^"[^/]*(\/.*)"$/\1/')/node_modules"
+NPM_MONACO_D_TS="$NODE_MODULES_DIR/monaco-editor/monaco.d.ts"
 MONACO_D_TS="$TS_IMPORTER_DIR/monaco.d.ts"
 MONACO_SCALA="$ROOT_DIR/metabrowse-js/src/main/scala/monaco/Monaco.scala"
-
-if [[ ! -e "$NPM_MONACO_D_TS" ]]; then
-  (cd "$ROOT_DIR" && sbt -batch clean js/compile:npmUpdate)
-fi
 
 if [[ ! -d "$TS_IMPORTER_DIR" ]]; then
   git clone https://github.com/sjrd/scala-js-ts-importer.git "$TS_IMPORTER_DIR"

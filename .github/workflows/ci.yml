@@ -14,13 +14,8 @@ jobs:
         with:
           fetch-depth: 0
           submodules: true
-      - uses: actions/setup-java@v4
-        with:
-          java-version: 8
-          distribution: adopt
-          cache: 'sbt'
-      - uses: sbt/setup-sbt@v1
-      - run: sbt +test:compile # ensuring metabrowse compiles for all Scala versions
+      - uses: coursier/cache-action@v6
+      - run: ./mill -k __.compile # ensuring metabrowse compiles for all Scala versions
 
   unit:
     name: Tests
@@ -30,20 +25,13 @@ jobs:
       matrix:
         scala: [2.12.20, 2.13.16]
         os: [ubuntu-latest]
-        java: [11, 8]
+        java: [11, 21]
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: true
-      - uses: actions/setup-java@v4
-        with:
-          java-version: "${{ matrix.java }}"
-          distribution: adopt
-          cache: 'sbt'
-      - uses: sbt/setup-sbt@v1
-      - run: sbt ci-test
+      - uses: coursier/cache-action@v6
+      - run: ./mill -k '{tests,js}[${{ matrix.scala }}].test'
         env:
-          SCALA_VERSION: ${{ matrix.scala }}
-          # See https://stackoverflow.com/questions/69692842/error-message-error0308010cdigital-envelope-routinesunsupported/69699772#69699772
-          NODE_OPTIONS: "--openssl-legacy-provider"
+          METABROWSE_TEST_JVM: "temurin:${{ matrix.java }}"
